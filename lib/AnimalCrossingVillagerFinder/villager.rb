@@ -19,7 +19,7 @@ class Villager
   def self.all
     @@all
   end
-
+  #Since I'm scraping from a list that's already alphabetical, I didn't bother to alphabetize this list
   def self.list_by_name
     all.each_with_index{|villager, i| puts "#{i+1}: #{villager.name}"}
   end
@@ -38,8 +38,28 @@ class Villager
     villagers_array = Scraper.scrape_index_page(@@url)
     create_from_collection(villagers_array)
   end
+  
+  def self.all_personalities
+    all.map{ |villager| villager.personality}.uniq
+  end
 
   def self.all_species
-    all.map{|villager| villager.species}.uniq
+    all.map{ |villager| villager.species}.uniq
   end
+
+  def self.find_villager_by_name(name)
+  all.find{ |villager| villager.name == name}
+  end
+  
+  #I may end up combining this method with the .find_villager_by_name method, for some reason I'm thinking
+  #I might have a situation where I want to get the villager by name but maybe not display all of the info for it
+  def self.display_attributes(name)
+    villager = self.find_villager_by_name(name)
+    puts "Villager name: #{villager.name}"
+    puts "Villager species: #{villager.species}"
+    puts "Villager personality: #{villager.personality}"
+    puts "Villager catchphrase: #{villager.catchphrase}"
+    puts "Villager birthday: #{villager.birthday}"
+  end
+
 end

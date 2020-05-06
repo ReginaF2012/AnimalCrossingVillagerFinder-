@@ -6,8 +6,13 @@ class CLI
     def call
         welcome
         Villager.make_villagers
+        #binding.pry
         menu
         goodbye
+    end
+
+    def error_message
+        puts "Sorry I didn't understand you"
     end
 
     def welcome
@@ -18,20 +23,31 @@ class CLI
     def menu
       puts "If you would like to see all of the villagers, enter 'all'."
       puts "If you would like to see villagers listed by personality or species"
-      puts "enter 'personality' or 'species'"
+      puts "enter 'personality' or 'species'."
+      puts "If you know the name of the villager you want to know more about enter 'name'."
       input = ""
         while input != "exit"
             input = gets.strip.downcase
-            if input == "all"
+            if input = "name"
+               puts "Please enter the name of the villager that you want to know more about:"
+               input = gets.strip
+               if Villager.display_attributes(input)
+                Villager.display_attributes(input)
+               else
+
+               end
+            elsif input == "all"
               Villager.list_by_name 
             elsif input == "personality"
+              # Because the personalities are listed on the website with a ♂ or ♀ and I didn't want to get rid of that
+              # I decided to just hard code this array of personality types to check if the user selected a valid personality
               personality_types = ["Cranky", "Lazy", "Jock", "Smug", "Normal", "Sisterly", "Snooty", "Peppy"]
               puts "Select a personality by typing in one of the following:"
               puts "Cranky, Lazy, Jock, Smug, Normal, Sisterly, Snooty, or Peppy."
               selection = gets.strip.downcase.capitalize 
        
               while personality_types.include?(selection) == false && selection != "exit"
-                puts "Sorry I didn't understand you."
+                error_message
                 puts "Select a personality by typing in one of the following:"
                 puts "Cranky, Lazy, Jock, Smug, Normal, Sisterly, Snooty, or Peppy."
                 puts "Enter 'exit' twice to exit."
@@ -43,8 +59,8 @@ class CLI
                 puts "#{Villager.all_species.join(", ")}"
                 selection = gets.strip.downcase.capitalize
                 
-                while species_types.include?(selection) == false && selection != "exit"
-                  puts "Sorry I didn't understand you."
+                while Villager.all_species.include?(selection) == false && selection != "exit"
+                  error_message
                   puts "Select a species by typing in one of the following:"
                   puts "Cranky, Lazy, Jock, Smug, Normal, Sisterly, Snooty, or Peppy."
                   puts "Enter 'exit' twice to exit."
