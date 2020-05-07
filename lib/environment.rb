@@ -5,5 +5,5 @@ require_relative './AnimalCrossingVillagerFinder/cli'
 #require 'bundler/setup'
 #Bundler.require
 require 'nokogiri'
-require 'open-uri'
 require 'pry'
+require 'open-uri'
