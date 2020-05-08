@@ -3,6 +3,9 @@ require_relative './AnimalCrossingVillagerFinder/villager'
 require_relative './AnimalCrossingVillagerFinder/scraper'
 require_relative './AnimalCrossingVillagerFinder/cli'
 require_relative './AnimalCrossingVillagerFinder/ascii'
+require_relative './AnimalCrossingVillagerFinder/personality'
+require_relative './AnimalCrossingVillagerFinder/species'
+
 #require 'bundler/setup'
 #Bundler.require
 require 'rmagick'

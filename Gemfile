@@ -6,6 +6,10 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 # gem "rails"
 
-gem 'nokogiri'
-gem 'pry'
-gem 'asciiart', git: 'https://github.com/ReginaF2012/asciiart'
+require 'rmagick'
+require 'rainbow'
+require 'rainbow/ext/string'
+require 'nokogiri'
+require 'pry'
+require 'open-uri'
+#require 'asciiart'
