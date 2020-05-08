@@ -40,20 +40,30 @@ class Scraper
         attributes = {}
         doc = Nokogiri::HTML(open(wikipage))
 
+        image_link = doc.css("img.pi-image-thumbnail").attr("src").value
+
+        a = AsciiArt.new(image_link)
+        image = a.to_ascii_art
+
+        #Prior to index 5, it is information I've already gotten from the initial scrape.
         attribute_table = doc.css("div.pi-data-value.pi-font")[5..]
 
         attribute_table.each.with_index do |row, i|
-          #binding.pry
           attributes[doc.css("h3.pi-data-label")[i+5].text.downcase.split(" ").join("_").to_sym] = row.text
         end
 
-        # I can't quite figure out ReGex to use chomp with multiple arguments. The game the quote was from was tacked on to the end of the quote
-        # so I did this to remove all of the game titles from the end
+        #some villers don't have a quote
         if doc.css("blockquote i")[0] == nil
-          quote = doc.css("blockquote i").text.chomp("Animal Crossing").chomp("Wild World").chomp("City Folk").chomp("New Leaf").chomp("HHD").chomp("Pocket Camp")
+        #? I can't quite figure out ReGex to use chomp with multiple arguments. The game the quote was from was tacked on to the end of the quote (in a very ugly way)
+        #? so I did this to remove all of the game titles.
+        quote = nil
+          #quote = doc.css("blockquote i").text.chomp("Animal Crossing").chomp("Wild World").chomp("City Folk").chomp("New Leaf").chomp("HHD").chomp("Pocket Camp")
         else
           quote = doc.css("blockquote i")[0].text.chomp("Animal Crossing").chomp("Wild World").chomp("City Folk").chomp("New Leaf").chomp("HHD").chomp("Pocket Camp")
         end
+
+        attributes[:image] = image
+        attributes[:image_link] = image_link
         attributes[:quote] = quote
         attributes
     end

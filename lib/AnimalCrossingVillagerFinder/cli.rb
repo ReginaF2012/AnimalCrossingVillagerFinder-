@@ -4,7 +4,8 @@
 class CLI
 
     BASE_URL = "https://animalcrossing.fandom.com"
-
+    # for villager guessing game
+    @points = 0
     def call
         welcome
         make_villagers
@@ -55,6 +56,7 @@ class CLI
       puts "If you would like to see all of the villagers, enter 'all'."
       puts "If you would like to see villagers listed by personality enter 'personality'."
       puts "If you would like to see villagers listed by species enter 'species'."
+      puts "If you would like to play a game enter 'game'"
       puts "Type exit to leave."
       
       input = gets.strip.downcase
@@ -71,13 +73,40 @@ class CLI
              villager_by_personality
          elsif input == "species"
              villager_by_species
+         elsif input == "game"
+          guess_villager_game
          else
-          error_message
+          error_message2
           menu
          end
       end
     end
 
+  def guess_villager_game
+    random_villager = Villager.all.shuffle.first
+    add_attributes_to_villager(random_villager.name)
+    puts random_villager.image
+    puts "Who's that villager? Enter their name below! (remember names are case sensitive!)"
+    puts "Enter 'back' to go back to main menu"
+    input = gets.strip
+    if input == "back"
+      menu
+    elsif input == random_villager.name
+      puts "Congratulations! That is correct!" 
+      @points =+ 1
+      puts "Your Score: #{@points}"
+      puts "Getting the next villager..."
+      sleep(2)
+      guess_villager_game
+    else 
+      puts "Sorry that is incorrect! Better luck on the next one!"
+      @points =+ 0
+      puts "Your Score: #{@points}"
+      puts "Getting the next villager..."
+      sleep(2)
+      guess_villager_game
+    end
+  end
 
   def villager_info_from_name
     puts "Please enter the name of the villager that you want to know more about:"
