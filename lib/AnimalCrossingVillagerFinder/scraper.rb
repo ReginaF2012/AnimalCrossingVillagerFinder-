@@ -1,4 +1,3 @@
-
 #require 'nokogiri'
 #require 'open-uri'
 #require 'pry'
@@ -41,13 +40,12 @@ class Scraper
         species_info.gsub!("/n", "")
       end
       attributes  = {}
-      attributes[info] = species_info
+      attributes[:info] = species_info
       attributes
     end
 
     def self.initial_scrape(main_page_url)
         main_page = Nokogiri::HTML(open(main_page_url))
-        villagers = []
        
         main_page.css("table.sortable tr")[1..].each do |table_row|
              
@@ -62,21 +60,31 @@ class Scraper
                 new_species = Species.find_or_create_by_name(table_row.css("td a")[4].text)
                 new_species.url = BASE_URL + table_row.css("td a")[4].attr("href")
                 villager_personality = table_row.css("td a")[3].text[2..]
-                villager_species = table_row.css("td a")[4].text
+
+                villager = Villager.new
+                villager.name = villager_name
+                villager.personality = Personality.find_by_name(table_row.css("td a")[3].text[2..])
+                villager.species = Species.find_by_name(table_row.css("td a")[4].text)
+                villager.birthday = villager_birthday
+                villager.catchphrase = villager_catchphrase
+                villager.villager_wiki = villager_wiki_page
+                villager
              else
                new_species = Species.find_or_create_by_name(table_row.css("td a")[3].text)
                new_species.url = BASE_URL + table_row.css("td a")[3].attr("href")
                villager_personality = table_row.css("td a")[2].text[2..]
-               villager_species = table_row.css("td a")[3].text
+
+               villager = Villager.new
+               villager.name = villager_name
+               villager.personality = Personality.find_by_name(table_row.css("td a")[2].text[2..])
+               villager.species = Species.find_by_name(table_row.css("td a")[3].text)
+               villager.birthday = villager_birthday
+               villager.catchphrase = villager_catchphrase
+               villager.villager_wiki = villager_wiki_page
+               villager
              end
-             villagers << {:name => villager_name, 
-                :personality => Personality.find_by_name(villager_personality), 
-                :species => Species.find_by_name(villager_species),
-                :birthday => villager_birthday,
-                :catchphrase => villager_catchphrase,
-                :villager_wiki => villager_wiki_page }
+
         end
-      villagers
     end
     
     #This one needs to return a hash because this hash is what's being passed into the add_villager_attributes method
@@ -87,8 +95,8 @@ class Scraper
         image_link = doc.css("img.pi-image-thumbnail").attr("src").value
 
         a = AsciiArt.new(image_link)
-        #I wanted to center the art, the first and last line are always +--... and the are both | so, this was how I did
-        image = a.to_ascii_art(color: true).gsub("|","#{" " * 25}").gsub("+----------------------------------------------------------------------------------------------------+", "")
+       
+        image = a.to_ascii_art(color: true)
 
         #Prior to index 5, it is information I've already gotten from the initial scrape.
         attribute_table = doc.css("div.pi-data-value.pi-font")[5..]

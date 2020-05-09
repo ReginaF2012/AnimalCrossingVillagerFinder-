@@ -11,6 +11,14 @@ class Species
     @@all
   end
 
+  def villagers
+    Villager.all.find_all{ |villager| villager.species == self}
+  end
+
+  def personalities
+    villagers.map{ |villager| villager.personality}
+  end
+
   def self.all_names
     all.map{ |species| species.name}
   end
