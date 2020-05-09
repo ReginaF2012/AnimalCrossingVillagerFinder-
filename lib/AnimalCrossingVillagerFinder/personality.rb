@@ -18,11 +18,15 @@ class Personality
     def self.all
       @@all
     end
-
+    
+    # I had a couple of places where I listed all of the personalities to the user to choose from
+    # having a method that did this for me made this easier
     def self.all_names
       all.map{ |personality| personality.name}
     end
+    
 
+    # This is because my second scrape returns a hash
     def add_personality_attributes(attributes_hash)
       attributes_hash.each do |k, v|
       send(("#{k}="), v)
@@ -30,10 +34,12 @@ class Personality
       self
     end
   
+    # All of the villagers with a certain personality
     def villagers
       Villager.all.find_all{ |villager| villager.personality == self}
     end
 
+    # This isn't used anywhere in my program but this is the 'has many through' relationship with species
     def species
       villagers.map{ |villager| villager.species}
     end

@@ -1,3 +1,5 @@
+#? Would love to refactor and create a module for the methods that are shared within this class and the Personality class
+
 class Species
   attr_accessor :name, :info, :url
   @@all = []

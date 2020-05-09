@@ -7,6 +7,8 @@ BASE_URL = "https://animalcrossing.fandom.com"
 class Scraper 
     
     # I wanted to scrape another page to provide additional info about aspects of the game
+    #? I was having issues scraping the info for the Personality class in my initial scrape so
+    #? I also created all of the instances of Personalitys here.
     def self.info_scrape(info_page_url)
       info_page = Nokogiri::HTML(open(info_page_url))
       Villager.info = info_page.css("p")[1].text
@@ -19,7 +21,10 @@ class Scraper
         #binding.pry
       end
     end
-
+    
+    # This is the second scrape for Personality class instances
+    #? Looking back would have liked to refactor this to take in a personality and add the traits that way
+    #? rather than return a hash of attributes
     def self.personality_attributes_scrape(personality_url)
       personality_page = Nokogiri::HTML(open(personality_url))
       attributes = {}
@@ -31,7 +36,10 @@ class Scraper
       attributes[:info] =  info
       attributes
     end
-
+    
+    #Second scrape for Species class instances
+    #? Same as with the Personality instances, would've liked to take in an instance and add attributes
+    #? rather than return a hash
     def self.species_attributes_scrape(species_url)
       species_page = Nokogiri::HTML(open(species_url))
       species_info = species_page.css(".mw-content-text").text.match(/\b[A-Z].+[(].+[)].+/x).to_s
@@ -43,7 +51,9 @@ class Scraper
       attributes[:info] = species_info
       attributes
     end
+    
 
+    # The initial scrape. Creates all instances of Villagers and Species.
     def self.initial_scrape(main_page_url)
         main_page = Nokogiri::HTML(open(main_page_url))
        
@@ -59,6 +69,8 @@ class Scraper
              if villager_name == "Jacob" || villager_name == "Spork"
                 new_species = Species.find_or_create_by_name(table_row.css("td a")[4].text)
                 new_species.url = BASE_URL + table_row.css("td a")[4].attr("href")
+               # Since I created the instances of Personalitys in the info_scrape I only needed to grab
+               # the name of the personality
                 villager_personality = table_row.css("td a")[3].text[2..]
 
                 villager = Villager.new
@@ -87,7 +99,8 @@ class Scraper
         end
     end
     
-    #This one needs to return a hash because this hash is what's being passed into the add_villager_attributes method
+    # Second scrape for Villager instances, adds more attributes
+    #? Yet again would like to refactor to take in an instance and just add attributes rather than return a hash
     def self.scrape_wiki_page(wikipage)
         attributes = {}
         doc = Nokogiri::HTML(open(wikipage))

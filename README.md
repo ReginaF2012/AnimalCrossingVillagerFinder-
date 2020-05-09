@@ -1,8 +1,11 @@
 # AnimalCrossingVillagerFinder
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/AnimalCrossingVillagerFinder`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to Animal Crossing Villager Finder! Did you know there are over 300 villagers in Animal Crossing New Horizons? With so many villagers it can be hard to find the specific one you're looking for! This CLI gem offers many different ways to sort through an learn more about the individual villagers, by scraping information from: https://animalcrossing.fandom.com/wiki/Villager_list_(New_Horizons)
 
-TODO: Delete this and the text above, and describe your gem
+As well as a 'Guess the Villager' mini game!
+
+**NOTE: The minigame implements code from this gem: https://rubygems.org/gems/asciiart/versions/0.0.9
+but there is a deprecated requirement, preventing me from using that gem. The code that is found in lib/AnimalCrossingVillagerFinder/ascii.rb is from that gem!!!**
 
 ## Installation
 
@@ -22,7 +25,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run bin/AnimalCrossingVillagerFinder for an interactive propmt. Follow this video guide which demonstrates how to use this gem.
 
 ## Development
 
@@ -32,7 +35,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/AnimalCrossingVillagerFinder.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ReginaF2012/AnimalCrossingVillagerFinder.
 
 
 ## License

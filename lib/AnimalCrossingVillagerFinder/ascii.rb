@@ -1,5 +1,6 @@
-#require "asciiart/version"This was code from a gem I wanted to use but I couldn't get the gem to work so
-#I copied the code that I wanted from it. It converts images into ASCII art!
+#require "asciiart/version"
+# This was code from a gem I wanted to use but I couldn't get the gem to work so
+# I copied the code that I wanted from it. It converts images into ASCII art!
 require 'rmagick'
 require 'uri'
 require 'open-uri'
