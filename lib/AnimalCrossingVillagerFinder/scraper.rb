@@ -25,31 +25,27 @@ class Scraper
     # This is the second scrape for Personality class instances
     #? Looking back would have liked to refactor this to take in a personality and add the traits that way
     #? rather than return a hash of attributes
-    def self.personality_attributes_scrape(personality_url)
-      personality_page = Nokogiri::HTML(open(personality_url))
-      attributes = {}
+    def self.personality_attributes_scrape(personality)
+      personality_page = Nokogiri::HTML(open(personality.url))
       info = personality_page.css("p").text.gsub(/(Below).+/,"")
       # dealing with some weirdness in the lazy and snooty personality info
       if info.include?("Before Thinking") || info.include?("Snooty villagers will ask")
         info = personality_page.css("p")[0..8].text.gsub(/(Below).+/,"")
       end
-      attributes[:info] =  info
-      attributes
+      personality.info = info
     end
     
     #Second scrape for Species class instances
     #? Same as with the Personality instances, would've liked to take in an instance and add attributes
     #? rather than return a hash
-    def self.species_attributes_scrape(species_url)
-      species_page = Nokogiri::HTML(open(species_url))
+    def self.species_attributes_scrape(species)
+      species_page = Nokogiri::HTML(open(species.url))
       species_info = species_page.css(".mw-content-text").text.match(/\b[A-Z].+[(].+[)].+/x).to_s
       if species_info != species_page.css("p").text
         species_info += "#{" "}" + species_page.css("p").text.strip.chomp("New Horizons 9").gsub("== In oth|}", "").strip
         species_info.gsub!("/n", "")
       end
-      attributes  = {}
-      attributes[:info] = species_info
-      attributes
+      species.info = species_info
     end
     
 
@@ -101,9 +97,8 @@ class Scraper
     
     # Second scrape for Villager instances, adds more attributes
     #? Yet again would like to refactor to take in an instance and just add attributes rather than return a hash
-    def self.scrape_wiki_page(wikipage)
-        attributes = {}
-        doc = Nokogiri::HTML(open(wikipage))
+    def self.second_scrape(villager)
+        doc = Nokogiri::HTML(open(villager.villager_wiki))
 
         image_link = doc.css("img.pi-image-thumbnail").attr("src").value
 
@@ -111,11 +106,16 @@ class Scraper
        
         image = a.to_ascii_art(color: true)
 
+        attributes = {}
+
         #Prior to index 5, it is information I've already gotten from the initial scrape.
+        # there are many attributes a villager may or may not have, this is why I decided to use mass assignment
         attribute_table = doc.css("div.pi-data-value.pi-font")[5..]
 
         attribute_table.each.with_index do |row, i|
           attributes[doc.css("h3.pi-data-label")[i+5].text.downcase.split(" ").join("_").to_sym] = row.text
+          #This is the method that uses mass assignment in the villager class
+          villager.add_villager_attributes(attributes)
         end
 
         #some villers don't have a quote
@@ -128,9 +128,8 @@ class Scraper
           quote = doc.css("blockquote i")[0].text.chomp("Animal Crossing").chomp("Wild World").chomp("City Folk").chomp("New Leaf").chomp("HHD").chomp("Pocket Camp")
         end
 
-        attributes[:image] = image
-        attributes[:image_link] = image_link
-        attributes[:quote] = quote
-        attributes
+        villager.image = image
+        villager.image_link = image_link
+        villager.quote = quote
     end
  end

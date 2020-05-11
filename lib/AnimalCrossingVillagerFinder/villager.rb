@@ -41,12 +41,11 @@ class Villager
   end
 
   def self.find_by_name(name)
-  all.find{ |villager| villager.name == name}
+  all.find{ |villager| villager.name.downcase == name.downcase}
   end
   
   
-  def self.display_attributes(name)
-    villager = self.find_by_name(name)
+  def self.display_attributes(villager)
     puts  villager.image
     # Even though I used the ASCII art for the villager game, I wanted to provide an image link because some of
     # the ASCII art is hard to tell what you're looking at (I figured it added some extra difficulty to the game though)

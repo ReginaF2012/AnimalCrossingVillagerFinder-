@@ -16,7 +16,8 @@ class Species
   def villagers
     Villager.all.find_all{ |villager| villager.species == self}
   end
-
+  
+  # has many through with Personalitys. Didn't end up using it
   def personalities
     villagers.map{ |villager| villager.personality}
   end
@@ -26,18 +27,11 @@ class Species
   end
 
   def self.find_by_name(name)
-    all.find{ |species| species.name == name }
+    all.find{ |species| species.name.downcase == name.downcase }
   end
 
   def self.find_or_create_by_name(name)
     find_by_name(name) ? self.find_by_name(name) : name = Species.new(name)
-  end
-
-  def add_species_attributes(attributes_hash)
-    attributes_hash.each do |k, v|
-    send(("#{k}="), v)
-  end
-    self
   end
 
 end

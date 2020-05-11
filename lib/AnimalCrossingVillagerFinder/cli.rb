@@ -9,8 +9,6 @@ class CLI
       welcome
       Scraper.info_scrape("https://animalcrossing.fandom.com/wiki/Villager")
       Scraper.initial_scrape("https://animalcrossing.fandom.com/wiki/Villager_list_(New_Horizons)")
-      #there aren't that many personalities, so I decided to scrape all info for them here
-      add_attributes_to_personalities
       menu
   end
   
@@ -40,25 +38,20 @@ class CLI
   end    
 
 
-  def add_attributes_to_villager(villager_name)
-      villager = Villager.find_by_name(villager_name)
-      attributes = Scraper.scrape_wiki_page(villager.villager_wiki)
-      villager.add_villager_attributes(attributes)
+  def add_attributes_to_villager(villager)
+      Scraper.second_scrape(villager)
   end
   
   def add_attributes_to_species(species)
-      attributes = Scraper.species_attributes_scrape(species.url)
-      species.add_species_attributes(attributes)
         if species.name == "Frog" || species.name == "Octopus"
           species.info = "Sorry, there isn't any more information about this species!"
+        else
+          Scraper.species_attributes_scrape(species)
         end
   end
   
-  def add_attributes_to_personalities
-    Personality.all.each do |personality|
-    attributes = Scraper.personality_attributes_scrape(personality.url)
-    personality.add_personality_attributes(attributes)
-    end
+  def add_attributes_to_personality(personality)
+   Scraper.personality_attributes_scrape(personality)
   end
 
   def menu
@@ -149,18 +142,20 @@ class CLI
       puts "The personalities are: #{Personality.all_names.join(", ")}."
       puts "Enter 'back' to go back to the main menu."
       puts "Would you like to learn about something else? (y/n)"
-      input = gets.strip.capitalize
+      input = gets.strip.downcase
       
-      if input == "Exit"
+      if input == "exit"
         exit
-      elsif input == "Back"
+      elsif input == "back"
         menu
-      elsif input == "Y"
+      elsif input == "y"
         learn
-      elsif input == "N"
+      elsif input == "n"
         menu
       elsif Personality.find_by_name(input).is_a?(Personality)
-        puts "#{Personality.find_by_name(input).info}"
+        selected_personality = Personality.find_by_name(input)
+        add_attributes_to_personality(selected_personality)
+        puts "#{selected_personality.info}"
         puts "Would you like to learn more about something else? (y/n)"
         
         input = gets.strip.downcase
@@ -191,16 +186,17 @@ class CLI
       puts "#{Species.all_names[20..25].join(", ")}"
       puts "#{Species.all_names[25..30].join(", ")}"
       puts "#{Species.all_names[30..].join(", ")}."
-      input = gets.strip.capitalize
-      if input == "Exit"
+      input = gets.strip.downcase
+      if input == "exit"
         exit
-      elsif input == "Back"
+      elsif input == "back"
         menu
-      elsif input == "Learn"
+      elsif input == "learn"
         learn
       elsif Species.find_by_name(input).is_a?(Species)
-        add_attributes_to_species(Species.find_by_name(input))
-        puts "#{Species.find_by_name(input).info}"
+        selected_species = Species.find_by_name(input)
+        add_attributes_to_species(selected_species)
+        puts "#{selected_species.info}"
         puts "Would you like to learn more about something else? (y/n)"
         input = gets.strip.downcase
         if input == "exit"
@@ -231,14 +227,14 @@ class CLI
   
     random_villager = Villager.all.shuffle.first
   
-    add_attributes_to_villager(random_villager.name)
+    add_attributes_to_villager(random_villager)
   
     puts random_villager.image
   
-    puts "Who's that villager? Enter their name below! (remember names are case sensitive!)"
+    puts "Who's that villager? Enter their name below!"
     puts "Enter 'back' to go back to main menu"
   
-    input = gets.strip
+    input = gets.strip.downcase
     if input == "exit"
       goodbye
       exit
@@ -249,7 +245,7 @@ class CLI
     end
   
     
-      if input == random_villager.name
+      if input.downcase == random_villager.name.downcase
   
         puts "Congratulations! That is correct!"
         points += 1
@@ -275,7 +271,7 @@ def villager_info_from_name
   puts "Enter 'back' to go back to the main menu."
   puts "Please enter the name of the villager that you want to know more about:"
 
-  input = gets.strip
+  input = gets.strip.downcase
     if input == "exit"
 
       goodbye
@@ -286,9 +282,9 @@ def villager_info_from_name
       menu
 
     elsif Villager.find_by_name(input).is_a?(Villager)
-
-      add_attributes_to_villager(input)
-      Villager.display_attributes(input)
+      selected_villager = Villager.find_by_name(input)
+      add_attributes_to_villager(selected_villager)
+      Villager.display_attributes(selected_villager)
 
       puts "Do you have the name of another villager you would like to learn more about?(y/n)"
 
@@ -311,7 +307,7 @@ def villager_info_from_name
     else
 
         error_message
-        puts "Villager names are case sensitive! Would you like to try again?(y/n)"
+        puts "Would you like to try again?(y/n)"
 
         input = gets.strip.downcase
 
@@ -387,14 +383,14 @@ def villager_by_species
   puts "#{Species.all_names[25..30].join(", ")}"
   puts "#{Species.all_names[30..].join(", ")}."
   
-  input = gets.strip.downcase.capitalize
+  input = gets.strip.downcase
   
-  if input == "Exit"
+  if input == "exit"
 
     goodbye
     exit
 
-  elsif input == "Back"
+  elsif input == "back"
 
       menu
 
@@ -449,14 +445,14 @@ def villager_by_personality
   puts "Select a personality by typing in one of the following:"
   puts "Cranky, Lazy, Jock, Smug, Normal, Sisterly, Snooty, Peppy"
 
-  input = gets.strip.downcase.capitalize
+  input = gets.strip.downcase
 
-  if input == "Exit"
+  if input == "exit"
 
     goodbye
     exit
 
-  elsif input == "Back"
+  elsif input == "back"
 
       menu
 

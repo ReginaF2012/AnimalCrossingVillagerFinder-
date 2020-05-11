@@ -25,27 +25,19 @@ class Personality
       all.map{ |personality| personality.name}
     end
     
-
-    # This is because my second scrape returns a hash
-    def add_personality_attributes(attributes_hash)
-      attributes_hash.each do |k, v|
-      send(("#{k}="), v)
-    end
-      self
-    end
   
     # All of the villagers with a certain personality
     def villagers
       Villager.all.find_all{ |villager| villager.personality == self}
     end
 
-    # This isn't used anywhere in my program but this is the 'has many through' relationship with species
+    # This isn't used anywhere in my program but this is a 'has many through' relationship with species
     def species
       villagers.map{ |villager| villager.species}
     end
   
     def self.find_by_name(name)
-      all.find{ |personality| personality.name == name}
+      all.find{ |personality| personality.name.downcase == name.downcase}
     end
   
   end

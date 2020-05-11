@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/ReginaF2012/AnimalCrossingVillagerFinder-"
+  #? I don't know what is supposed to go here so I just put the same url to the github repository
   spec.metadata["changelog_uri"] = "https://github.com/ReginaF2012/AnimalCrossingVillagerFinder-"
 
   # Specify which files should be added to the gem when it is released.
