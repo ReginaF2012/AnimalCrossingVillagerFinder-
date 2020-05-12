@@ -7,7 +7,9 @@ class CLI
 
   def call
       welcome
+      # Create classes, add class variables (@@info for learn section)
       Scraper.info_scrape("https://animalcrossing.fandom.com/wiki/Villager")
+      # Instantiate instances
       Scraper.initial_scrape("https://animalcrossing.fandom.com/wiki/Villager_list_(New_Horizons)")
       menu
   end
@@ -43,6 +45,7 @@ class CLI
   end
   
   def add_attributes_to_species(species)
+    # There is no info to scrape for frog or octopus species
         if species.name == "Frog" || species.name == "Octopus"
           species.info = "Sorry, there isn't any more information about this species!"
         else
@@ -132,7 +135,7 @@ class CLI
       elsif input == "n"
         menu
       else
-        error_message
+        error_message2
         learn
       end
 
@@ -146,12 +149,10 @@ class CLI
       
       if input == "exit"
         exit
-      elsif input == "back"
+      elsif input == "back" || input == "n"
         menu
       elsif input == "y"
         learn
-      elsif input == "n"
-        menu
       elsif Personality.find_by_name(input).is_a?(Personality)
         selected_personality = Personality.find_by_name(input)
         add_attributes_to_personality(selected_personality)
@@ -166,7 +167,7 @@ class CLI
         elsif input == "y"
           learn
         else 
-          error_message
+          error_message2
           learn
         end
       else
@@ -176,6 +177,8 @@ class CLI
 
     elsif input == "species"
 
+      # There was no additional info to scrape about species as a class, or category, so I just wrote this out.
+      puts "In Animal Crossing you live in a town where all of your neighbors are anthropomorphic animals. This means that they are animals but they stand on two legs, walk, and talk, just like humans. There are many different species of animals that your neighbors can be."
       puts "Enter 'back' to go back to the menu."
       puts "Enter 'learn' to go back to the learn menu."
       puts "Select a species to learn about by typing in one of the following:"
